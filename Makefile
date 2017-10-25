@@ -2,17 +2,18 @@
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-install: ## pip install dependencies
-	 cd actions/hello; ls; docker run --rm -v "$(PWD)/actions/hello:/tmp" openwhisk/python3action sh -c "cd tmp; virtualenv virtualenv; source  virtualenv/bin/activate; pip install -r requirements.txt;"
-
-zip: ## create zip
-	 cd actions/hello; zip -r helloPython.zip virtualenv __main__.py
+build: ## docker build
+	cd actions/main; docker build -t luebken/python_ml_runtime .
+	docker push luebken/python_ml_runtime
 
 update: ## wsk action update
-	bx wsk action update helloPython --kind python:3 --web true actions/hello/helloPython.zip
+	cd actions/main; bx wsk action update mainAction --docker luebken/python_ml_runtime --web true main.py
 
 invoke: ## wsk action invoke
-	bx wsk action invoke --result helloPython --param name World
+	bx wsk action invoke --result mainAction --param name World
+
+local: ## test locally
+	python actions/main/main.py
 
 curl: ## curl
-	curl -s https://openwhisk.eu-gb.bluemix.net/api/v1/web/luebken_dev/default/helloPython.json?name=matt | jq .
+	curl -s https://openwhisk.eu-gb.bluemix.net/api/v1/web/luebken_dev/default/mainAction.json?name=matt | jq .
