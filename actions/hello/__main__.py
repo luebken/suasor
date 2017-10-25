@@ -3,3 +3,7 @@ def main(args):
     greeting = "Haaaaallo " + name + "!"
     print(greeting)
     return {"greeting": greeting}
+
+# for local testing
+if __name__ == "__main__": 
+    main({})
