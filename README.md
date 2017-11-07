@@ -1,12 +1,18 @@
 # Suasor
 
-Suasor [latin: recommender] is a playground for me for different recommender systems. The first one is recommending Github repositories based on Github stars. Based on this blogpost: https://medium.com/towards-data-science/recommending-github-repositories-with-google-bigquery-and-the-implicit-library-e6cce666c77
+Suasor [latin: recommender] is a playground for building recommender systems in a serverless environment.
 
-Compute runs on OpenWhisk in BlueMix. Data is public Github data in BigQuery.
+The first POC is based on the blogpost: [Recommending GitHub Repositories with Google BigQuery and the implicit library](https://medium.com/towards-data-science/recommending-github-repositories-with-google-bigquery-and-the-implicit-library-e6cce666c77).
+
+
+## Infrastructure
+
+* Compute runs on OpenWhisk in BlueMix. 
+* Data is public Github data in BigQuery.
 
 ## Deployment
 
-Please consult the Makefile.
+Please consult the [Makefile](Makefile).
 
 ## Status / Roadmap
 

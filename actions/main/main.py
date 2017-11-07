@@ -7,11 +7,25 @@ import json
 
 
 query = """
-SELECT
- weight_pounds, state, year, gestation_weeks
-FROM
- `bigquery-public-data.samples.natality`
-ORDER BY weight_pounds DESC LIMIT 10;
+WITH stars AS (
+     SELECT actor.login AS user, repo.name AS repo
+     FROM githubarchive.month.201706
+     WHERE type="WatchEvent"
+),
+repositories_stars AS (
+     SELECT repo, COUNT(*) as c FROM stars GROUP BY repo
+     ORDER BY c DESC
+     LIMIT 1000
+),
+users_stars AS (
+    SELECT user, COUNT(*) as c FROM  stars
+    WHERE repo IN (SELECT repo FROM repositories_stars)
+    GROUP BY user HAVING c > 10 AND C < 100
+    LIMIT 10000
+)
+SELECT user, repo FROM stars
+WHERE repo IN (SELECT repo FROM repositories_stars)
+AND user IN (SELECT user FROM users_stars)
 """
 
 project_id = "suasor-184008"
