@@ -1,14 +1,20 @@
 .DEFAULT_GOAL := help
 
-build: ## docker build & push. creates the ml runtime container 
+build-ml-runtime: ## docker build & push. creates the ml runtime container.
 	cd actions/main; docker build -t luebken/python_ml_runtime .
 	docker push luebken/python_ml_runtime
 
-update: ## wsk action update
+update: ## wsk action update. updates the openwhisk action.
 	cd actions/main; bx wsk action update mainAction --docker luebken/python_ml_runtime --web true main.py
 
-invoke: ## wsk action invoke
+invoke: ## wsk action invoke. invokes the openwhisk action.
 	bx wsk action invoke --result mainAction --param name World
+
+# get the latest activation id
+ACTIVATION_ID := $(shell bx wsk activation list |head -n2 | tail -n1 |awk '{ print $$1 }')
+
+latest-logs: ## wsk activation list & wsk logs. get the latest logs.
+	bx wsk activation logs $(ACTIVATION_ID)
 
 local: ## test locally
 	python actions/main/main.py
