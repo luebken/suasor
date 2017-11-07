@@ -10,7 +10,7 @@ Please consult the Makefile.
 
 ## Status / Roadmap
 
-Please consult https://github.com/luebken/suasor/issues/1
+Please consult https://github.com/luebken/suasor/projects/1
 
 ## Links / Resources
 
