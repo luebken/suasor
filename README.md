@@ -8,6 +8,10 @@ Compute runs on OpenWhisk in BlueMix. Data is public Github data in BigQuery.
 
 Please consult the Makefile.
 
+## Status / Roadmap
+
+Please consult https://github.com/luebken/suasor/issues/1
+
 ## Links / Resources
 
 * Panda on OpenWhisk: http://jamesthom.as/blog/2017/08/04/large-applications-on-openwhisk/
