@@ -5,7 +5,13 @@ build-ml-runtime: ## docker build & push. creates the ml runtime container.
 	docker push luebken/python_ml_runtime
 
 update: ## wsk action update. updates the openwhisk action.
-	cd actions/main; bx wsk action update mainAction --docker luebken/python_ml_runtime --web true main.py
+	@cd actions/main;\
+	bx wsk action update mainAction\
+	 --docker luebken/python_ml_runtime\
+	 --web true\
+	 -p GC_SVC_PRIVATE_KEY "${GC_SVC_PRIVATE_KEY}"\
+	 -p GC_SVC_PRIVATE_KEY_ID "${GC_SVC_PRIVATE_KEY_ID}"\
+	 main.py
 
 invoke: ## wsk action invoke. invokes the openwhisk action.
 	bx wsk action invoke --result mainAction --param name World
@@ -13,7 +19,7 @@ invoke: ## wsk action invoke. invokes the openwhisk action.
 # get the latest activation id
 ACTIVATION_ID := $(shell bx wsk activation list |head -n2 | tail -n1 |awk '{ print $$1 }')
 
-latest-logs: ## wsk activation list & wsk logs. get the latest logs.
+logs: ## wsk activation list & wsk logs. get the latest logs.
 	bx wsk activation logs $(ACTIVATION_ID)
 
 local: ## test locally
