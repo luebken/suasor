@@ -1,0 +1,2 @@
+FROM luebken/python_ml_runtime
+RUN pip -v install implicit

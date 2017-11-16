@@ -1,13 +1,15 @@
 .DEFAULT_GOAL := help
 
-build-ml-runtime: ## docker build & push. creates the ml runtime container.
-	cd actions/main; docker build -t luebken/python_ml_runtime .
+build-runtimes: ## docker build & push. creates the ml runtime container.
+	cd runtimes; docker build -t luebken/python_ml_runtime -f Dockerfile-ml .
+	cd runtimes; docker build -t luebken/python_implicit_runtime -f Dockerfile-implicit .
 	docker push luebken/python_ml_runtime
+	docker push luebken/python_implicit_runtime
 
 update: ## wsk action update. updates the openwhisk action.
 	@cd actions/main;\
 	bx wsk action update mainAction\
-	 --docker luebken/python_ml_runtime\
+	 --docker luebken/python_implicit_runtime\
 	 --web true\
 	 -p GC_SVC_PRIVATE_KEY "${GC_SVC_PRIVATE_KEY}"\
 	 -p GC_SVC_PRIVATE_KEY_ID "${GC_SVC_PRIVATE_KEY_ID}"\
