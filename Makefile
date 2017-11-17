@@ -24,8 +24,13 @@ ACTIVATION_ID := $(shell bx wsk activation list |head -n2 | tail -n1 |awk '{ pri
 logs: ## wsk activation list & wsk logs. get the latest logs.
 	bx wsk activation logs $(ACTIVATION_ID)
 
-local: ## test locally
+local-python: ## test locally with native python call
 	python actions/main/main.py
+
+local-docker: ## test locally with docker
+	cd actions/main; docker build -t luebken/suasor -f Dockerfile-suasor .
+	@docker run -e GC_SVC_PRIVATE_KEY="${GC_SVC_PRIVATE_KEY}" -e GC_SVC_PRIVATE_KEY_ID="${GC_SVC_PRIVATE_KEY_ID}" luebken/suasor
+
 
 curl: ## curl the action
 	curl -s https://openwhisk.eu-gb.bluemix.net/api/v1/web/luebken_dev/default/mainAction.json?name=matt | jq .
