@@ -60,6 +60,13 @@ def main(params):
     # map each repo and user to a unique numeric value
     data['user'] = data['user'].astype("category")
     data['repo'] = data['repo'].astype("category")
+
+    # dictionaries to translate names to ids and vice-versa
+    repos = dict(enumerate(data['repo'].cat.categories))
+    repo_ids = {r: i for i, r in repos.items()}
+
+    if reference_repo not in repo_ids:
+        return {"message" : "No result. Reference repo not in training set."}
     
     # create a sparse matrix of all the users/repos
     stars = coo_matrix((np.ones(data.shape[0]),
@@ -74,13 +81,6 @@ def main(params):
                                 iterations=50)
     confidence = 40
     model.fit(confidence * stars)
-
-    # dictionaries to translate names to ids and vice-versa
-    repos = dict(enumerate(data['repo'].cat.categories))
-    repo_ids = {r: i for i, r in repos.items()}
-
-    if reference_repo not in repo_ids:
-        return {'error' : 'Reference repo not in training set.'}
  
     similar_ids = model.similar_items(repo_ids[reference_repo])
     print('found ', len(similar_ids), ' similar repos')
