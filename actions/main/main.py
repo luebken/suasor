@@ -47,10 +47,12 @@ gc_svc_account = {
 def main(params):
     # check for mandatory params
     if not 'reference_repo' in params:
-        return {'err' : 'Mandatory param reference_repo not present'}
+        return {'error' : 'Mandatory param reference_repo not present'}
     reference_repo = params['reference_repo']
+    print('reference_repo', reference_repo)
 
     # get data
+    print('read GBQ data')
     gc_svc_account['private_key_id'] = params['GC_SVC_PRIVATE_KEY_ID']
     gc_svc_account['private_key'] = params['GC_SVC_PRIVATE_KEY']
     data = pd.io.gbq.read_gbq(query, dialect="standard", project_id=gc_svc_account['project_id'], private_key=json.dumps(gc_svc_account))
@@ -65,6 +67,7 @@ def main(params):
                         data['user'].cat.codes.copy())))
 
     # train model
+    print('training model')
     model = AlternatingLeastSquares(factors=50,
                                 regularization=0.01,
                                 dtype=np.float64,
@@ -76,13 +79,17 @@ def main(params):
     repos = dict(enumerate(data['repo'].cat.categories))
     repo_ids = {r: i for i, r in repos.items()}
 
+    if reference_repo not in repo_ids:
+        return {'error' : 'Reference repo not in training set.'}
+ 
     similar_ids = model.similar_items(repo_ids[reference_repo])
+    print('found ', len(similar_ids), ' similar repos')
 
     result = []
     for x in range(1, len(similar_ids)):
         result.append(repos[similar_ids[x][0]])
     
-    return {'reference_repo': reference_repo, 'similar_repos':result, 'err' : ''}
+    return {'reference_repo': reference_repo, 'similar_repos':result, 'errror' : ''}
 
 
 # for local testing
