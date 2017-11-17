@@ -16,7 +16,7 @@ update: ## wsk action update. updates the openwhisk action.
 	 main.py
 
 invoke: ## wsk action invoke. invokes the openwhisk action.
-	bx wsk action invoke --result mainAction --param name World
+	bx wsk action invoke --result mainAction --param reference_repo expressjs/express
 
 # get the latest activation id
 ACTIVATION_ID := $(shell bx wsk activation list |head -n2 | tail -n1 |awk '{ print $$1 }')
@@ -25,7 +25,7 @@ logs: ## wsk activation list & wsk logs. get the latest logs.
 	bx wsk activation logs $(ACTIVATION_ID)
 
 local-python: ## test locally with native python call
-	python actions/main/main.py
+	python actions/main/main.py expressjs/express
 
 local-docker: ## test locally with docker
 	cd actions/main; docker build -t luebken/suasor -f Dockerfile-suasor .
@@ -33,7 +33,7 @@ local-docker: ## test locally with docker
 
 
 curl: ## curl the action
-	curl -s https://openwhisk.eu-gb.bluemix.net/api/v1/web/luebken_dev/default/mainAction.json?name=matt | jq .
+	curl -s https://openwhisk.eu-gb.bluemix.net/api/v1/web/luebken_dev/default/mainAction.json?reference_repo=expressjs/express | jq .
 
 # via http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:

@@ -6,6 +6,7 @@ from scipy.sparse import coo_matrix
 from implicit.als import AlternatingLeastSquares
 import json
 import os
+import sys
 
 
 query = """
@@ -44,6 +45,11 @@ gc_svc_account = {
 }
 
 def main(params):
+    # check for mandatory params
+    if not 'reference_repo' in params:
+        return {'err' : 'Mandatory param reference_repo not present'}
+    reference_repo = params['reference_repo']
+
     # get data
     gc_svc_account['private_key_id'] = params['GC_SVC_PRIVATE_KEY_ID']
     gc_svc_account['private_key'] = params['GC_SVC_PRIVATE_KEY']
@@ -63,14 +69,20 @@ def main(params):
                                 regularization=0.01,
                                 dtype=np.float64,
                                 iterations=50)
-
     confidence = 40
     model.fit(confidence * stars)
-    
-    print("\n\n")
 
+    # dictionaries to translate names to ids and vice-versa
+    repos = dict(enumerate(data['repo'].cat.categories))
+    repo_ids = {r: i for i, r in repos.items()}
+
+    similar_ids = model.similar_items(repo_ids[reference_repo])
+
+    result = []
+    for x in range(1, len(similar_ids)):
+        result.append(repos[similar_ids[x][0]])
     
-    return {'test': 'test'}
+    return {'reference_repo': reference_repo, 'similar_repos':result, 'err' : ''}
 
 
 # for local testing
@@ -78,4 +90,5 @@ if __name__ == "__main__":
     params = {}
     params['GC_SVC_PRIVATE_KEY'] = bytes(os.environ['GC_SVC_PRIVATE_KEY'], "utf-8").decode('unicode_escape')
     params['GC_SVC_PRIVATE_KEY_ID'] = bytes(os.environ['GC_SVC_PRIVATE_KEY_ID'], "utf-8").decode('unicode_escape')
+    params['reference_repo'] = sys.argv[1]
     print(main(params))
