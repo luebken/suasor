@@ -24,26 +24,38 @@ Please consult the [Makefile](Makefile).
 
   ````
   $ make help
-  build-ml-runtime               docker build & push. creates the ml runtime container.
+  build-runtimes                 docker build & push. creates the ml runtime container.
   update                         wsk action update. updates the openwhisk action.
   invoke                         wsk action invoke. invokes the openwhisk action.
   logs                           wsk activation list & wsk logs. get the latest logs.
-  local                          test locally
-  curl                           curl the action 
+  local-python                   test locally with native python call
+  local-docker                   test locally with docker
+  curl                           curl the action
+
+
+  $ vi actions/main/main.py
+  # <insert fancy coding action>
 
   $ make update
   ok: updated action mainAction
 
-  $ make invoke
-  bx wsk action invoke --result mainAction --param name World
+  $ make curl
+  curl -s https://openwhisk.eu-gb.bluemix.net/api/v1/web/luebken_dev/default/mainAction.json?reference_repo=expressjs/express | jq .
   {
-    "gestation_weeks": {
-        "0": 47,
-        "1": 40,
-        "2": 38,
-        "3": 34,
-        "4": 39,
-
+    "errror": "",
+    "reference_repo": "expressjs/express",
+    "similar_repos": [
+      "meteor/meteor",
+      "Automattic/mongoose",
+      "npm/npm",
+      "koajs/koa",
+      "sequelize/sequelize",
+      "socketio/socket.io",
+      "antirez/redis",
+      "jaredhanson/passport",
+      "alsotang/node-lessons"
+    ]
+  }
   ````
 
 ## Status / Roadmap
