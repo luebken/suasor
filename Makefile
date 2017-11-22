@@ -1,5 +1,7 @@
 .DEFAULT_GOAL := help
 
+.PHONY: build-runtimes update invoke logs local-python local-docker curl help pylint
+
 build-runtimes: ## docker build & push. creates the ml runtime container.
 	cd runtimes; docker build -t luebken/python_ml_runtime -f Dockerfile-ml .
 	cd runtimes; docker build -t luebken/python_implicit_runtime -f Dockerfile-implicit .
