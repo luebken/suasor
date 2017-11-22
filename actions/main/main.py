@@ -6,6 +6,7 @@ import os
 import sys
 
 import daiquiri
+import logging
 import numpy as np
 import pandas as pd
 from scipy.sparse import coo_matrix
@@ -58,7 +59,7 @@ def main(params):
         return {'error': 'Mandatory param reference_repo not present'}
 
     reference_repo = params['reference_repo']
-    LOGGER.info('reference_repo', reference_repo)
+    LOGGER.info('reference_repo %s' % reference_repo)
 
     # get data
     LOGGER.info('read GBQ data')
@@ -98,7 +99,7 @@ def main(params):
     model.fit(confidence * stars)
 
     similar_ids = model.similar_items(repo_ids[reference_repo])
-    LOGGER.info('found ', len(similar_ids), ' similar repos')
+    LOGGER.info('found %d similar repos' % len(similar_ids))
 
     result = []
     for idx in range(1, len(similar_ids)):
@@ -118,4 +119,5 @@ if __name__ == "__main__":
             bytes(os.environ['GC_SVC_PRIVATE_KEY_ID'], "utf-8").decode('unicode_escape'),
         'reference_repo': sys.argv[1]
     }
-    print(main(arguments))
+    result = main(arguments)
+    LOGGER.info('similar_repos %s' % result['similar_repos'])
