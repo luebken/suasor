@@ -14,7 +14,6 @@ RUN pip install \
     numpy \
     pandas \
     scipy \
-    daiquiri \
     sklearn
 
 # Google Big Query
