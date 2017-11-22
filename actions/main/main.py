@@ -5,10 +5,14 @@ import json
 import os
 import sys
 
+import daiquiri
 import numpy as np
 import pandas as pd
 from scipy.sparse import coo_matrix
 from implicit.als import AlternatingLeastSquares
+
+daiquiri.setup(level=logging.INFO)
+LOGGER = daiquiri.getLogger(__name__)
 
 
 _QUERY = """
@@ -54,10 +58,10 @@ def main(params):
         return {'error': 'Mandatory param reference_repo not present'}
 
     reference_repo = params['reference_repo']
-    print('reference_repo {}'.format(reference_repo))
+    LOGGER.info('reference_repo', reference_repo)
 
     # get data
-    print('read GBQ data')
+    LOGGER.info('read GBQ data')
     _GC_SVC_ACCOUNT['private_key_id'] = params['GC_SVC_PRIVATE_KEY_ID']
     _GC_SVC_ACCOUNT['private_key'] = params['GC_SVC_PRIVATE_KEY']
     data = pd.io.gbq.read_gbq(
@@ -85,7 +89,7 @@ def main(params):
     )
 
     # train model
-    print('training model')
+    LOGGER.info('training model')
     model = AlternatingLeastSquares(factors=50,
                                     regularization=0.01,
                                     dtype=np.float64,
@@ -94,7 +98,7 @@ def main(params):
     model.fit(confidence * stars)
 
     similar_ids = model.similar_items(repo_ids[reference_repo])
-    print('found {} similar repos'.format(len(similar_ids)))
+    LOGGER.info('found ', len(similar_ids), ' similar repos')
 
     result = []
     for idx in range(1, len(similar_ids)):
