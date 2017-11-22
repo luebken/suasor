@@ -1,2 +1,4 @@
 language: python
+install:
+- pip3 install -U -r dev_requirements.txt
 script: make check
