@@ -88,7 +88,7 @@ def main(params):
     print('training model')
     model = AlternatingLeastSquares(factors=50,
                                     regularization=0.01,
-                                    dtype=np.float64,
+                                    dtype=np.float64,  # pylint: disable=no-member
                                     iterations=50)
     confidence = 40
     model.fit(confidence * stars)
