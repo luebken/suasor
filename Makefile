@@ -37,7 +37,7 @@ curl: ## curl the action
 	curl -s https://openwhisk.eu-gb.bluemix.net/api/v1/web/luebken_dev/default/mainAction.json?reference_repo=expressjs/express | jq .
 
 check: ## software qa checks. e.g. before a code commit see .travis.yml 
-	pylint actions/main/main.py
+	pylint --disable=C,W actions/main/main.py
 
 # via http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:
