@@ -6,6 +6,8 @@ The first POC is based on the blogpost: [Recommending GitHub Repositories with G
 
 ## Development
 
+[![Build Status](https://travis-ci.org/luebken/suasor.svg?branch=master)](https://travis-ci.org/luebken/suasor)
+
 ### Prerequisites
 
 * The compute runs on OpenWhisk on BlueMix/IBM Cloud. This guide assumes you have an account and the [bx CLI](https://console.bluemix.net/docs/cli/reference/bluemix_cli/download_cli.html) installed.
