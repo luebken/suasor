@@ -4,9 +4,9 @@
 import json
 import os
 import sys
+import logging
 
 import daiquiri
-import logging
 import numpy as np
 import pandas as pd
 from scipy.sparse import coo_matrix
@@ -54,6 +54,7 @@ _GC_SVC_ACCOUNT = {
 
 
 def main(params):
+    """Main function."""
     # check for mandatory params
     if 'reference_repo' not in params:
         return {'error': 'Mandatory param reference_repo not present'}
@@ -101,16 +102,16 @@ def main(params):
     similar_ids = model.similar_items(repo_ids[reference_repo])
     LOGGER.info('found %d similar repos' % len(similar_ids))
 
-    result = []
+    similar_repos = []
     for idx in range(1, len(similar_ids)):
-        result.append(repos[similar_ids[idx][0]])
+        similar_repos.append(repos[similar_ids[idx][0]])
 
-    return {'reference_repo': reference_repo, 'similar_repos': result, 'error': ''}
+    return {'reference_repo': reference_repo, 'similar_repos': similar_repos, 'error': ''}
 
 
 # for local testing
 if __name__ == "__main__":
-    # TODO: replace with click
+    # replace with click
     # pylint: disable=invalid-name
     arguments = {
         'GC_SVC_PRIVATE_KEY':
